@@ -46,6 +46,12 @@ public class StrosekController {
         return dao.findAll();
     }
 
+    @GetMapping("/iskanje")
+    public Iterable<Strosek> isciStroske(@RequestParam String q) {
+        log.info("Iskanje stroškov: " + q);
+        return dao.isci(q.trim());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Strosek> getStrosek(@PathVariable int id) {
         return dao.findById(id)

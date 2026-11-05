@@ -9,6 +9,7 @@ import {
   getKategorije,
   getStrosek,
   getStroski,
+  isciStroske,
   updateKategorija,
   updateStrosek,
 } from "./api";
@@ -25,6 +26,7 @@ const App = () => {
   const [urejana, setUrejana] = useState<Kategorija | null>(null);
   const [napaka, setNapaka] = useState<string | null>(null);
   const [iskanje, setIskanje] = useState("");
+  const [zadetki, setZadetki] = useState<Strosek[] | null>(null);
 
   const naloziStroske = async () => {
     try {
@@ -46,6 +48,23 @@ const App = () => {
     getStroski().then(setStroski).catch((e) => setNapaka(e.message));
     getKategorije().then(setKategorije).catch((e) => setNapaka(e.message));
   }, []);
+
+  const q = iskanje.trim();
+
+  // ob spremembi iskanja ali seznama stroškov ponovno pokličemo backend
+  useEffect(() => {
+    if (!q) return;
+    let preklicano = false;
+    const timer = setTimeout(() => {
+      isciStroske(q)
+        .then((r) => !preklicano && setZadetki(r))
+        .catch((e) => !preklicano && setNapaka(e.message));
+    }, 300);
+    return () => {
+      preklicano = true;
+      clearTimeout(timer);
+    };
+  }, [q, stroski]);
 
   const handleSave = async (s: StrosekInput, id?: number) => {
     try {
@@ -111,12 +130,7 @@ const App = () => {
 
   const skupaj = stroski.reduce((sum, s) => sum + s.znesek, 0);
 
-  const q = iskanje.trim().toLowerCase();
-  const filtrirani = q
-    ? stroski.filter(
-        (s) => s.opis.toLowerCase().includes(q) || (s.kategorija?.naziv.toLowerCase().includes(q) ?? false)
-      )
-    : stroski;
+  const filtrirani = q ? zadetki ?? [] : stroski;
 
   return (
     <>

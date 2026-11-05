@@ -8,6 +8,12 @@ export const getStroski = async (): Promise<Strosek[]> => {
   return res.json();
 };
 
+export const isciStroske = async (q: string): Promise<Strosek[]> => {
+  const res = await fetch(`${BASE}/stroski/iskanje?q=${encodeURIComponent(q)}`);
+  if (!res.ok) throw new Error("Napaka pri iskanju");
+  return res.json();
+};
+
 export const getStrosek = async (id: number): Promise<Strosek> => {
   const res = await fetch(`${BASE}/stroski/${id}`);
   if (!res.ok) throw new Error("Strošek ne obstaja");

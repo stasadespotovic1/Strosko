@@ -1,6 +1,6 @@
 # 📋 Podroben opis primerov uporabe – $troško
 
-Dokument vsebuje podrobne opise vseh **še neimplementiranih** primerov uporabe (PU) iz [diagrama primerov uporabe](../README.md#-diagram-primerov-uporabe).
+Dokument vsebuje podrobne opise vseh **še neimplementiranih** primerov uporabe (PU) iz diagrama primerov uporabe
 
 | ID | Primer uporabe | Akter | Status |
 |---|---|---|---|

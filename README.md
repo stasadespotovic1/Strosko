@@ -20,6 +20,7 @@
    - [Obseg rešitve in morebitne omejitve](#obseg-rešitve-in-morebitne-omejitve)
 3. [Besednjak](#-besednjak)
 4. [Diagram primerov uporabe](#-diagram-primerov-uporabe)
+   - [Uporabniške zgodbe](#uporabniške-zgodbe)
 5. [Uporabljene tehnologije](#-uporabljene-tehnologije)
 6. [Struktura projekta](#-struktura-projekta)
 7. [Navodila za nameščanje in zagon](#-navodila-za-nameščanje-in-zagon)
@@ -47,7 +48,7 @@
 
 ### Opis rešitve
 
-$troško je spletna aplikacija, sestavljena iz React odjemalca in Spring Boot zalednega sistema s PostgreSQL bazo. Nov obiskovalec si najprej **ustvari uporabniški račun**. Po prijavi vidi in ureja **samo svoje podatke**, zato lahko aplikacijo hkrati uporablja več uporabnikov.
+Nov obiskovalec si v aplikaciji najprej **ustvari uporabniški račun**. Po prijavi vidi in ureja **samo svoje podatke**, zato lahko aplikacijo hkrati uporablja več uporabnikov.
 
 Registriran uporabnik si ustvari svoje **kategorije** (hrana, prevoz, zabava, naročnine …) in jim po želji določi mesečni **budget**. Nastavi lahko tudi splošni **mesečni budget**. Nato sproti vnaša **stroške** in **prihodke**. Aplikacija iz vnesenih podatkov izračuna porabo po kategorijah in **preostanek** do konca meseca ter ju pregledno prikaže. Ob vsakem novem strošku sistem preveri, ali se poraba približuje budgetu, in uporabnika po potrebi **opozori**.
 
@@ -59,7 +60,8 @@ Stroške, ki se ponavljajo vsak mesec (najemnina, Netflix, Spotify …), uporabn
 
 | Funkcionalnost | Opis | PU | Status |
 |---|---|---|---|
-| Registracija in prijava | Ustvarjanje uporabniškega računa in prijava z e-pošto in geslom; vsak uporabnik vidi samo svoje podatke | PU1 | 📝 |
+| Registracija | Ustvarjanje uporabniškega računa z imenom, e-pošto in geslom | PU1 | ✅ |
+| Prijava in odjava | Prijava z e-pošto in geslom; vsak uporabnik vidi samo svoje podatke | – (predpogoj za PU2–PU10) | ✅ |
 | Kategorije | Ustvarjanje, urejanje in brisanje lastnih kategorij (hrana, prevoz, zabava, naročnine …) | PU2 | ✅ |
 | Budget po kategorijah | Vsaka kategorija ima lahko svoj mesečni budget | PU2 | ✅ |
 | Mesečni budget | Splošen mesečni budget, nastavljen na začetku meseca | PU2 | 🚧 |
@@ -134,7 +136,7 @@ Diagram prikazuje načrtovano različico aplikacije z vsemi ključnimi funkciona
 
 ![Diagram primerov uporabe](DPU_canvas.drawio.png)
 
-<sub>Izvorna datoteka za urejanje v [draw.io](https://app.diagrams.net/): [`DPU.drawio`](DPU.drawio)</sub>
+<sub>Izvorna datoteka za urejanje v [draw.io](https://app.diagrams.net/): [`DPU.drawio`](DPU.drawio) · Razlaga povezav: [`docs/diagram-primerov-uporabe.md`](docs/diagram-primerov-uporabe.md)</sub>
 
 **Akterji**
 
@@ -148,7 +150,7 @@ Diagram prikazuje načrtovano različico aplikacije z vsemi ključnimi funkciona
 
 | ID | Primer uporabe | Akter | Status |
 |---|---|---|---|
-| PU1 | Registracija | Neregistriran uporabnik | 📝 |
+| PU1 | Registracija | Neregistriran uporabnik | ✅ |
 | PU2 | Upravljanje kategorij in budgetov | Registriran uporabnik | ✅ kategorije in budget kategorije · 🚧 mesečni budget |
 | PU3 | Vnos stroška | Registriran uporabnik | ✅ |
 | PU4 | Vnos prihodka | Registriran uporabnik | 🚧 |
@@ -159,17 +161,13 @@ Diagram prikazuje načrtovano različico aplikacije z vsemi ključnimi funkciona
 | PU9 | Upravljanje varčevalnih ciljev | Registriran uporabnik | 📝 |
 | PU10 | Upravljanje uporabnikov | Administrator | 📝 |
 
-**Povezave**
+> **Opomba:** Prijava ni samostojen primer uporabe, saj sama po sebi ni cilj uporabnika, temveč **predpogoj** za vse primere uporabe registriranega uporabnika in administratorja.
 
-- **PU3 Vnos stroška «include» PU6 Preverjanje budgeta** – ob vsakem vnesenem strošku sistem vedno preveri porabo glede na budget.
-- **PU2 Upravljanje kategorij in budgetov «include» PU6 Preverjanje budgeta** – ob vsaki spremembi budgeta kategorije ali mesečnega budgeta sistem vedno znova preveri, ali trenutna poraba že dosega nov budget.
-- **PU7 Prikaz opozorila «extend» PU6 Preverjanje budgeta** – opozorilo se prikaže samo pod pogojem, da poraba doseže 80 % ali več budgeta.
-- **PU7 Prikaz opozorila «extend» PU5 Pregled porabe** – ob odprtju pregleda porabe se opozorila prikažejo samo pod pogojem, da ima uporabnik neprebrana opozorila (npr. ker je bil strošek vnesen samodejno, ko ni bil prijavljen).
-- **Administrator → Registriran uporabnik (generalizacija)** – administrator podeduje vse primere uporabe registriranega uporabnika.
+📄 **Podroben opis primerov uporabe:** [`primeri_uporabe.md`](primeri_uporabe.md)
 
-> **Opomba:** Prijava ni prikazana kot samostojen primer uporabe, saj sama po sebi ni cilj uporabnika, temveč **predpogoj** za vse primere uporabe registriranega uporabnika in administratorja (navedena je v predpogojih podrobnih opisov).
+### Uporabniške zgodbe
 
-📄 **Podroben opis vseh neimplementiranih primerov uporabe:** [`primeri_uporabe.md`](primeri_uporabe.md)
+📋 Uporabniške zgodbe s sprejemnimi kriteriji, podrobnostmi implementacije in odgovornimi člani: [`docs/user-stories.md`](docs/user-stories.md)
 
 ---
 
@@ -184,6 +182,8 @@ Diagram prikazuje načrtovano različico aplikacije z vsemi ključnimi funkciona
 | Spring Web MVC | (Spring Boot 4.1.1) | REST kontrolerji |
 | Spring Data JPA / Hibernate | (Spring Boot 4.1.1) | ORM in dostop do baze |
 | [PostgreSQL JDBC driver](https://jdbc.postgresql.org/) | (Spring Boot 4.1.1) | Povezava s PostgreSQL |
+| Spring Validation (Jakarta Bean Validation) | (Spring Boot 4.1.1) | Preverjanje vhodnih podatkov (`@Email`, `@Size` …) |
+| Spring Security Crypto | (Spring Boot 4.1.1) | Zgoščevanje gesel z BCrypt |
 | [Lombok](https://projectlombok.org/) | 1.18.48 | Zmanjšanje "boilerplate" kode (getterji, setterji …) |
 | [springdoc-openapi](https://springdoc.org/) | 3.0.0 | Swagger UI in OpenAPI dokumentacija |
 | [Maven](https://maven.apache.org/) (wrapper) | 3.10.0 | Upravljanje odvisnosti in gradnja |
@@ -219,19 +219,31 @@ Strosko/
 │   │   ├── main/
 │   │   │   ├── java/si/um/feri/backend/
 │   │   │   │   ├── BackendApplication.java   # Vstopna točka aplikacije
+│   │   │   │   ├── config/
+│   │   │   │   │   └── WebConfig.java        # CORS, preverjanje prijave, BCrypt
 │   │   │   │   ├── vao/                      # Entitete (modeli podatkov)
 │   │   │   │   │   ├── Kategorija.java
-│   │   │   │   │   └── Strosek.java
+│   │   │   │   │   ├── Seja.java
+│   │   │   │   │   ├── Strosek.java
+│   │   │   │   │   ├── Uporabnik.java
+│   │   │   │   │   └── Vloga.java
 │   │   │   │   ├── dao/                      # Repozitoriji (dostop do baze)
 │   │   │   │   │   ├── KategorijaRepository.java
-│   │   │   │   │   └── StrosekRepository.java
+│   │   │   │   │   ├── SejaRepository.java
+│   │   │   │   │   ├── StrosekRepository.java
+│   │   │   │   │   └── UporabnikRepository.java
+│   │   │   │   ├── dto/                      # Podatki zahtev/odgovorov (registracija, prijava)
 │   │   │   │   └── rest/                     # REST kontrolerji (API končne točke)
+│   │   │   │       ├── AuthInterceptor.java  # Preverjanje žetona prijavljenega uporabnika
 │   │   │   │       ├── InfoController.java
 │   │   │   │       ├── KategorijaController.java
-│   │   │   │       └── StrosekController.java
+│   │   │   │       ├── NapakaHandler.java    # Enotna oblika sporočil o napakah
+│   │   │   │       ├── StrosekController.java
+│   │   │   │       └── UporabnikController.java  # Registracija, prijava, odjava
 │   │   │   └── resources/
 │   │   │       └── application.properties    # Konfiguracija (port, baza, JPA)
 │   │   └── test/                             # Testi
+│   ├── .env.example                 # Predloga za lokalne nastavitve (geslo baze)
 │   ├── mvnw / mvnw.cmd              # Skripti za zagon Maven wrapperja
 │   └── pom.xml                      # Maven odvisnosti in nastavitve gradnje
 │
@@ -241,6 +253,9 @@ Strosko/
 │   │   ├── components/              # React komponente
 │   │   │   ├── KategorijaForm.tsx   # Obrazec za dodajanje/urejanje kategorije
 │   │   │   ├── KategorijaList.tsx   # Seznam kategorij
+│   │   │   ├── Pregled.tsx          # Glavni zaslon prijavljenega uporabnika
+│   │   │   ├── PrijavaForm.tsx      # Obrazec za prijavo
+│   │   │   ├── RegistracijaForm.tsx # Obrazec za registracijo
 │   │   │   ├── StrosekForm.tsx      # Obrazec za dodajanje/urejanje stroška
 │   │   │   └── StrosekList.tsx      # Seznam stroškov
 │   │   ├── App.tsx                  # Glavna komponenta aplikacije
@@ -255,12 +270,13 @@ Strosko/
 │   ├── eslint.config.js             # Nastavitve ESLint
 │   └── vite.config.ts               # Nastavitve Vite
 │
-├── docs/                            # Projektna dokumentacija
-│   ├── diagram-primerov-uporabe.drawio # Diagram primerov uporabe (izvor za draw.io)
-│   ├── diagram-primerov-uporabe.png # Diagram primerov uporabe (slika)
-│   ├── diagram-primerov-uporabe.svg # Diagram primerov uporabe (vektorski izvor)
-│   └── primeri-uporabe.md           # Podroben opis primerov uporabe
+├── docs/                            # Podporna dokumentacija
+│   ├── diagram-primerov-uporabe.md  # Razlaga povezav na diagramu primerov uporabe
+│   └── user-stories.md              # Uporabniške zgodbe in sprejemni kriteriji
 │
+├── DPU.drawio                       # Diagram primerov uporabe (izvor za draw.io)
+├── DPU_canvas.drawio.png            # Diagram primerov uporabe (slika)
+├── primeri_uporabe.md               # Podroben opis primerov uporabe
 └── README.md
 ```
 
@@ -270,9 +286,11 @@ Strosko/
 
 | Mapa | Vloga |
 |---|---|
-| `vao/` | *Value Access Objects* – JPA entitete, ki predstavljajo tabele v bazi (`Kategorija`, `Strosek`). |
+| `vao/` | *Value Access Objects* – JPA entitete, ki predstavljajo tabele v bazi (`Uporabnik`, `Seja`, `Kategorija`, `Strosek`). |
 | `dao/` | *Data Access Objects* – Spring Data JPA repozitoriji za CRUD operacije nad entitetami. |
+| `dto/` | Podatki, ki jih REST API sprejme ali vrne, kadar se razlikujejo od entitet (npr. uporabnik brez gesla). |
 | `rest/` | REST kontrolerji, ki sprejemajo HTTP zahteve, validirajo podatke in kličejo repozitorije. |
+| `config/` | Spletna konfiguracija: CORS, preverjanje prijave in zgoščevanje gesel. |
 | `resources/` | Konfiguracijske datoteke aplikacije. |
 
 **Frontend** je razdeljen na:
@@ -323,30 +341,28 @@ cd Strosko
 
 ### 4. Okoljske spremenljivke
 
-Nastavitve backenda so v [`backend/src/main/resources/application.properties`](backend/src/main/resources/application.properties). Vsako lastnost lahko prepišete z okoljsko spremenljivko, zato **gesla za bazo ne vpisujte v repozitorij**, ampak ga nastavite lokalno:
+Nastavitve backenda so v [`backend/src/main/resources/application.properties`](backend/src/main/resources/application.properties). **Gesla za bazo ne vpisujte v repozitorij.** Backend ga prebere iz lokalne datoteke `backend/.env`, ki je v `.gitignore`:
+
+```bash
+cd backend
+cp .env.example .env          # Windows (PowerShell): Copy-Item .env.example .env
+```
+
+V `backend/.env` vpišite svoje podatke (vrstice oblike `KLJUC=vrednost`, brez narekovajev):
+
+```
+SPRING_DATASOURCE_USERNAME=postgres
+SPRING_DATASOURCE_PASSWORD=vase_geslo
+```
 
 | Spremenljivka | Privzeta vrednost | Opis |
 |---|---|---|
 | `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/stroski` | Naslov baze |
 | `SPRING_DATASOURCE_USERNAME` | `postgres` | Uporabnik baze |
-| `SPRING_DATASOURCE_PASSWORD` | – | Geslo uporabnika baze |
+| `SPRING_DATASOURCE_PASSWORD` | – (obvezno) | Geslo uporabnika baze |
 | `SERVER_PORT` | `8100` | Port backenda |
 
-**Windows (PowerShell):**
-
-```powershell
-$env:SPRING_DATASOURCE_USERNAME = "postgres"
-$env:SPRING_DATASOURCE_PASSWORD = "vase_geslo"
-```
-
-**Linux / macOS:**
-
-```bash
-export SPRING_DATASOURCE_USERNAME=postgres
-export SPRING_DATASOURCE_PASSWORD=vase_geslo
-```
-
-> V IntelliJ IDEA jih lahko nastavite tudi v *Run → Edit Configurations → Environment variables*.
+> Datoteka `.env` se išče v mapi, iz katere zaženete backend, zato ga zaženite iz mape `backend/` (v IntelliJ IDEA nastavite *Working directory* na `backend`). Namesto `.env` lahko vrednosti nastavite tudi kot običajne okoljske spremenljivke.
 
 ### 5. Zagon backenda
 
@@ -392,7 +408,8 @@ Frontend teče na **http://localhost:5173**.
 |---|---|
 | `Connection refused` na `localhost:5432` | PostgreSQL ne teče – zaženite storitev. |
 | `database "stroski" does not exist` | Ustvarite bazo (korak 3). |
-| `password authentication failed` | Preverite `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD`. |
+| `password authentication failed` ali `Could not resolve placeholder 'SPRING_DATASOURCE_PASSWORD'` | Preverite, da `backend/.env` obstaja (in ni shranjena kot `.env.txt`) ter vsebuje pravilno geslo. |
+| Napaka pri dodajanju stolpca `uporabnik_id` ob zagonu | Baza ima stroške ali kategorije iz različice brez uporabnikov. Bazo enkrat ponovno ustvarite: `DROP DATABASE stroski;` in `CREATE DATABASE stroski;`. |
 | `Port 8100 already in use` | Ustavite drug proces ali nastavite `SERVER_PORT`. |
 | Napake CORS v brskalniku | Preverite, da backend teče in da se `BASE` v `api.ts` ujema s portom. |
 
@@ -402,25 +419,58 @@ Frontend teče na **http://localhost:5173**.
 
 Osnovni URL: `http://localhost:8100/api/v1`
 
+Vse končne točke razen `/info`, `/auth/registracija` in `/auth/prijava` zahtevajo prijavo: odjemalec pošlje žeton, ki ga vrne registracija ali prijava, v glavi `Authorization: Bearer <žeton>`. Brez veljavnega žetona strežnik vrne `401`. Kategorije in stroški se vedno nanašajo samo na prijavljenega uporabnika; tuj zapis vrne `404`.
+
 | Metoda | Končna točka | Opis |
 |---|---|---|
 | `GET` | `/info` | Informacija o delovanju strežnika |
-| `GET` | `/kategorije` | Seznam vseh kategorij |
+| `POST` | `/auth/registracija` | Nov uporabniški račun (vrne žeton – uporabnik je takoj prijavljen) |
+| `POST` | `/auth/prijava` | Prijava z e-pošto in geslom (vrne žeton) |
+| `POST` | `/auth/odjava` | Odjava (žeton postane neveljaven) |
+| `GET` | `/auth/jaz` | Podatki prijavljenega uporabnika |
+| `GET` | `/kategorije` | Seznam kategorij prijavljenega uporabnika |
 | `GET` | `/kategorije/{id}` | Ena kategorija |
 | `POST` | `/kategorije` | Nova kategorija |
 | `PUT` | `/kategorije/{id}` | Posodobitev kategorije |
 | `DELETE` | `/kategorije/{id}` | Brisanje kategorije |
-| `GET` | `/stroski` | Seznam vseh stroškov |
+| `GET` | `/stroski` | Seznam stroškov prijavljenega uporabnika |
+| `GET` | `/stroski/iskanje?q=` | Iskanje stroškov po opisu ali kategoriji |
 | `GET` | `/stroski/{id}` | En strošek |
 | `POST` | `/stroski` | Nov strošek |
 | `PUT` | `/stroski/{id}` | Posodobitev stroška |
 | `DELETE` | `/stroski/{id}` | Brisanje stroška |
 
 <details>
+<summary>Primer zahteve – registracija</summary>
+
+```http
+POST /api/v1/auth/registracija
+Content-Type: application/json
+
+{
+  "ime": "Ana",
+  "email": "ana@primer.si",
+  "geslo": "geslo1234"
+}
+```
+
+Odgovor `201 Created`:
+
+```json
+{
+  "token": "c07Pfwni5FVYeR5eYEZ7…",
+  "uporabnik": { "id": 1, "ime": "Ana", "email": "ana@primer.si", "vloga": "UPORABNIK" }
+}
+```
+
+</details>
+
+<details>
 <summary>Primer zahteve – nov strošek</summary>
 
 ```http
 POST /api/v1/stroski
+Authorization: Bearer c07Pfwni5FVYeR5eYEZ7…
 Content-Type: application/json
 
 {
@@ -501,7 +551,7 @@ Uporabljamo obliko [Conventional Commits](https://www.conventionalcommits.org/):
 
 ### Kaj ne sodi v repozitorij
 
-- gesla in drugi skrivni podatki (uporabite okoljske spremenljivke),
+- gesla in drugi skrivni podatki (uporabite `backend/.env` ali okoljske spremenljivke),
 - generirane datoteke: `backend/target/`, `frontend/node_modules/`, `frontend/dist/`,
 - nastavitve IDE (`.idea/`, `.vscode/`),
 - arhivi in osebne datoteke (`*.zip` …).

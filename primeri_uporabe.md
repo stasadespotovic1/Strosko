@@ -1,10 +1,10 @@
 # 📋 Podroben opis primerov uporabe – $troško
 
-Dokument vsebuje podrobne opise vseh **še neimplementiranih** primerov uporabe (PU) iz diagrama primerov uporabe
+Dokument vsebuje podrobne opise primerov uporabe (PU) iz [diagrama primerov uporabe](README.md#-diagram-primerov-uporabe), ki ob nastanku dokumenta še niso bili implementirani.
 
 | ID | Primer uporabe | Akter | Status |
 |---|---|---|---|
-| PU1 | [Registracija](#pu1--registracija) | Neregistriran uporabnik | 📝 |
+| PU1 | [Registracija](#pu1--registracija) | Neregistriran uporabnik | ✅ |
 | PU2 | [Upravljanje kategorij in budgetov](#pu2--upravljanje-kategorij-in-budgetov-mesečni-budget) | Registriran uporabnik | ✅ kategorije · 🚧 mesečni budget* |
 | PU3 | Vnos stroška | Registriran uporabnik | ✅ – ni podrobno opisan** |
 | PU4 | [Vnos prihodka](#pu4--vnos-prihodka) | Registriran uporabnik | 🚧 |
@@ -34,11 +34,10 @@ Neregistriran uporabnik želi ustvariti uporabniški račun, da bo lahko spremlj
 Neregistriran uporabnik
 
 **Predpogoji:**
-- Aplikacija je zagnana in povezana s podatkovno bazo.
 - Uporabnik ni prijavljen.
 
 **Stanje sistema po PU:**
-Stanje se spremeni – v bazi je ustvarjen nov uporabniški račun z vlogo *registriran uporabnik*.
+Stanje se spremeni – ustvarjen je nov uporabniški račun z vlogo *registriran uporabnik*, uporabnik je prijavljen.
 
 **Scenarij:**
 1. Uporabnik na začetni strani izbere *Registracija*.
@@ -50,13 +49,13 @@ Stanje se spremeni – v bazi je ustvarjen nov uporabniški račun z vlogo *regi
 
 **Alternativni tokovi:**
 - **1a.** Uporabnik že ima račun – izbere *Prijava*; PU se zaključi.
-- **3a.** Uporabnik prekliče registracijo – sistem ga vrne na začetno stran, nič se ne shrani.
-- **4a.** E-poštni naslov ni veljavne oblike – sistem označi polje in zahteva popravek; nadaljuje se pri koraku 3.
-- **4b.** Geslo je krajše od 8 znakov ali se gesli ne ujemata – sistem izpiše napako; nadaljuje se pri koraku 3.
-- **4c.** Račun s tem e-poštnim naslovom že obstaja – sistem izpiše *»Račun s tem e-poštnim naslovom že obstaja.«* in ponudi prijavo.
+- **3a.** Uporabnik prekliče registracijo – sistem ga vrne na začetno stran, nič se ne shrani; PU se zaključi.
+- **4a.** E-poštni naslov ni veljavne oblike – sistem izpiše *»E-poštni naslov ni veljavne oblike.«*; nadaljuje se pri koraku 3.
+- **4b.** Geslo je krajše od 8 znakov ali se gesli ne ujemata – sistem izpiše *»Geslo mora imeti vsaj 8 znakov.«* oziroma *»Gesli se ne ujemata.«*; nadaljuje se pri koraku 3.
+- **4c.** Račun s tem e-poštnim naslovom že obstaja – sistem izpiše *»Račun s tem e-poštnim naslovom že obstaja.«* in ponudi povezavo *Prijava*. Če uporabnik izbere *Prijava*, se PU zaključi; če vnese drug e-poštni naslov, se nadaljuje pri koraku 3.
 
 **Izjeme:**
-- Strežnik ali baza nista dosegljiva – sistem izpiše *»Registracija trenutno ni mogoča. Poskusite znova.«*; vneseni podatki (razen gesla) ostanejo v obrazcu.
+- Strežnik ali baza nista dosegljiva – sistem izpiše *»Strežnik trenutno ni dosegljiv. Poskusite znova.«*; ime in e-poštni naslov ostaneta v obrazcu, polji za geslo se izpraznita; nadaljuje se pri koraku 3.
 
 ---
 
@@ -88,13 +87,13 @@ Stanje se spremeni – za izbrani mesec je shranjen (ali posodobljen) mesečni b
 
 **Alternativni tokovi:**
 - **1a.** Uporabnik želi dodati, urediti ali izbrisati kategorijo ali njen budget – izvede se že implementirani del PU2. Ob vsaki spremembi budgeta kategorije sistem prav tako izvede PU6 *Preverjanje budgeta*.
-- **2a.** Mesečni budget za mesec še ni nastavljen – sistem kot predlog prikaže znesek iz prejšnjega meseca ali vsoto budgetov kategorij.
+- **2a.** Mesečni budget za mesec še ni nastavljen – sistem kot predlog prikaže znesek iz prejšnjega meseca ali vsoto budgetov kategorij; nadaljuje se pri koraku 3.
 - **3a.** Uporabnik izbere drug (prihodnji) mesec – sistem prikaže podatke za ta mesec; nadaljuje se pri koraku 3.
-- **3b.** Uporabnik prekliče – nič se ne spremeni.
+- **3b.** Uporabnik prekliče – nič se ne spremeni; PU se zaključi.
 - **4a.** Znesek je negativen ali prazen – sistem izpiše napako in zahteva popravek; nadaljuje se pri koraku 3.
-- **4b.** Mesečni budget je manjši od vsote budgetov kategorij – sistem prikaže opozorilo in vpraša, ali uporabnik vseeno želi shraniti; ob potrditvi se nadaljuje pri koraku 5.
-- **4c.** Mesečni budget je manjši od že porabljenega zneska v mesecu – sistem opozori, da je budget že presežen; ob potrditvi se nadaljuje pri koraku 5.
-- **6a.** Poraba že dosega 80 % ali več novega budgeta – v okviru PU6 se sproži PU7 *Prikaz opozorila*.
+- **4b.** Mesečni budget je manjši od vsote budgetov kategorij – sistem prikaže opozorilo in vpraša, ali uporabnik vseeno želi shraniti; ob potrditvi se nadaljuje pri koraku 5, sicer pri koraku 3.
+- **4c.** Mesečni budget je manjši od že porabljenega zneska v mesecu – sistem opozori, da je budget že presežen; ob potrditvi se nadaljuje pri koraku 5, sicer pri koraku 3.
+- **6a.** Poraba že dosega 80 % ali več novega budgeta – v okviru PU6 se sproži PU7 *Prikaz opozorila*; po zaprtju opozorila se nadaljuje pri koraku 7.
 
 **Izjeme:**
 - Strežnik ali baza nista dosegljiva – sistem izpiše *»Budgeta ni bilo mogoče shraniti. Poskusite znova.«*; prejšnja vrednost ostane nespremenjena.
@@ -128,9 +127,7 @@ Stanje se spremeni – v bazi je shranjen nov prihodek uporabnika, preostanek te
 6. Sistem posodobi skupne prihodke in preostanek v tekočem mesecu.
 
 **Alternativni tokovi:**
-- **1a.** Uporabnik izbere obstoječi prihodek in možnost *Uredi* – sistem prikaže obrazec z obstoječimi podatki; nadaljuje se pri koraku 3.
-- **1b.** Uporabnik izbere obstoječi prihodek in možnost *Izbriši* – sistem zahteva potrditev, prihodek izbriše in posodobi preostanek.
-- **3a.** Uporabnik prekliče vnos – sistem zapre obrazec, nič se ne shrani.
+- **3a.** Uporabnik prekliče vnos – sistem zapre obrazec, nič se ne shrani; PU se zaključi.
 - **4a.** Znesek je prazen, enak 0 ali negativen – sistem označi polje in izpiše *»Znesek mora biti večji od 0.«*; nadaljuje se pri koraku 3.
 - **4b.** Datum ni veljaven ali manjka – sistem označi polje in zahteva popravek; nadaljuje se pri koraku 3.
 
@@ -167,10 +164,10 @@ Stanje se ne spremeni – PU samo prikazuje podatke.
 
 **Alternativni tokovi:**
 - **1a.** Uporabnik izbere drug mesec – sistem prikaže podatke za izbrani mesec; nadaljuje se pri koraku 2.
-- **2a.** V mesecu ni nobenega stroška – sistem prikaže sporočilo *»V tem mesecu še ni stroškov.«* in povzetek z ničelno porabo.
+- **2a.** V mesecu ni nobenega stroška – sistem prikaže sporočilo *»V tem mesecu še ni stroškov.«* in povzetek z ničelno porabo; PU se zaključi.
 - **2b.** Uporabnik ima neprebrana opozorila – sistem pred povzetkom izvede razširitev PU7 *Prikaz opozorila* («extend»); po zaprtju opozoril se nadaljuje pri koraku 3.
-- **3a.** Mesečni budget ni nastavljen – sistem namesto preostanka prikaže razliko med prihodki in porabo ter povezavo na PU2.
-- **5a.** Uporabnik klikne na kategorijo – sistem prikaže seznam stroškov te kategorije v izbranem mesecu.
+- **3a.** Mesečni budget ni nastavljen – sistem namesto preostanka prikaže razliko med prihodki in porabo ter povezavo na PU2; nadaljuje se pri koraku 5.
+- **5a.** Uporabnik klikne na kategorijo – sistem prikaže seznam stroškov te kategorije v izbranem mesecu; PU se zaključi.
 
 **Izjeme:**
 - Strežnik ali baza nista dosegljiva – sistem izpiše *»Podatkov ni bilo mogoče naložiti.«* in ponudi gumb *Poskusi znova*.
@@ -189,7 +186,7 @@ Sistem po vsakem novem strošku ali spremembi budgeta ugotovi, ali se je poraba 
 Registriran uporabnik (posredno, prek PU3 *Vnos stroška* ali PU2 *Upravljanje kategorij in budgetov*)
 
 **Predpogoji:**
-- PU6 se vedno izvede kot vključen del PU3 ali PU2 («include»). Izvede se tudi po samodejnem vnosu ponavljajočega se stroška (glej PU8).
+- PU6 se vedno izvede kot vključen del PU3 ali PU2 («include»). Izvede se tudi po samodejnem vnosu ponavljajočega se stroška (PU8, scenarij B).
 - Strošek ali sprememba budgeta je že uspešno shranjena.
 
 **Stanje sistema po PU:**
@@ -243,8 +240,8 @@ Stanje se spremeni – opozorilo je shranjeno v uporabnikov seznam opozoril (z o
 **Alternativni tokovi:**
 - **2a.** Za isto kategorijo in isti prag je bilo opozorilo v tem mesecu že prikazano – sistem novega opozorila ne ustvari (prepreči ponavljanje); PU se zaključi.
 - **4a.** Uporabnik v tistem trenutku ni prijavljen (npr. strošek je bil vnesen samodejno) – opozorilo ostane neprebrano in se prikaže, ko uporabnik naslednjič odpre PU5 *Pregled porabe*.
-- **5a.** Uporabnik klikne na opozorilo – sistem odpre PU5 *Pregled porabe* za ustrezno kategorijo.
-- **5b.** Uporabnik opozorila ne zapre – opozorilo ostane med neprebranimi.
+- **5a.** Uporabnik klikne na opozorilo – sistem opozorilo označi kot prebrano in odpre PU5 *Pregled porabe* za ustrezno kategorijo; PU se zaključi.
+- **5b.** Uporabnik opozorila ne zapre – opozorilo ostane med neprebranimi; PU se zaključi.
 
 **Izjeme:**
 - Opozorila ni mogoče shraniti – sistem ga vseeno prikaže v trenutni seji in napako zabeleži v dnevnik.
@@ -267,9 +264,9 @@ Registriran uporabnik
 - Uporabnik ima vsaj eno kategorijo.
 
 **Stanje sistema po PU:**
-Stanje se spremeni – ponavljajoči se strošek je dodan, spremenjen, začasno ustavljen ali izbrisan. Na dan zapadlosti sistem iz njega samodejno ustvari nov strošek.
+Stanje se spremeni – ponavljajoči se strošek je dodan, spremenjen, začasno ustavljen ali izbrisan (scenarij A). Na dan zapadlosti sistem iz njega samodejno ustvari nov strošek (scenarij B).
 
-**Scenarij:**
+**Scenarij A – upravljanje ponavljajočih se stroškov (izvaja uporabnik):**
 1. Uporabnik odpre seznam ponavljajočih se stroškov.
 2. Sistem prikaže uporabnikove ponavljajoče se stroške z zneskom, kategorijo, dnevom v mesecu in stanjem (aktiven/ustavljen).
 3. Uporabnik izbere *Dodaj ponavljajoči se strošek*.
@@ -277,23 +274,30 @@ Stanje se spremeni – ponavljajoči se strošek je dodan, spremenjen, začasno 
 5. Uporabnik izpolni obrazec in potrdi.
 6. Sistem preveri veljavnost podatkov.
 7. Sistem shrani ponavljajoči se strošek in ga prikaže na seznamu.
-8. Na dan zapadlosti sistem samodejno ustvari nov strošek (z oznako *samodejno vnesen*) in zanj izvede PU6 *Preverjanje budgeta*.
 
-**Alternativni tokovi:**
+**Alternativni tokovi scenarija A:**
 - **3a.** Uporabnik izbere obstoječi strošek in *Uredi* – sistem prikaže izpolnjen obrazec; spremembe veljajo od naslednjega vnosa naprej; nadaljuje se pri koraku 5.
-- **3b.** Uporabnik izbere *Ustavi* / *Nadaljuj* – sistem spremeni stanje; ustavljeni stroški se ne vnašajo samodejno.
-- **3c.** Uporabnik izbere *Izbriši* – sistem zahteva potrditev in izbriše ponavljajoči se strošek; že ustvarjeni stroški ostanejo.
-- **5a.** Uporabnik prekliče – nič se ne shrani.
+- **3b.** Uporabnik izbere *Ustavi* / *Nadaljuj* – sistem spremeni stanje in ga prikaže na seznamu; ustavljeni stroški se ne vnašajo samodejno. PU se zaključi.
+- **3c.** Uporabnik izbere *Izbriši* – sistem zahteva potrditev; ob potrditvi izbriše ponavljajoči se strošek (že ustvarjeni stroški ostanejo), ob preklicu se nič ne spremeni. PU se zaključi.
+- **5a.** Uporabnik prekliče – nič se ne shrani; PU se zaključi.
 - **6a.** Znesek ni večji od 0, kategorija ni izbrana ali dan ni med 1 in 31 – sistem označi napačna polja; nadaljuje se pri koraku 5.
 - **6b.** Končni mesec je pred začetnim – sistem izpiše napako; nadaljuje se pri koraku 5.
-- **7a.** Začetni mesec je tekoči in je dan v mesecu že minil – sistem vpraša, ali naj strošek takoj vnese tudi za tekoči mesec.
-- **8a.** Dan v mesecu je 29, 30 ali 31, mesec pa je krajši – sistem strošek vnese zadnji dan meseca.
-- **8b.** Strošek za tekoči mesec že obstaja – sistem ga ne ustvari ponovno (preprečevanje podvajanja).
-- **8c.** Strežnik na dan zapadlosti ni tekel – ob naslednjem zagonu sistem vnese vse zamujene stroške z izvirnim datumom zapadlosti.
+- **7a.** Začetni mesec je tekoči in je dan v mesecu že minil – sistem vpraša, ali naj strošek takoj vnese tudi za tekoči mesec. Ob potrditvi sistem strošek ustvari in zanj izvede PU6 *Preverjanje budgeta*; PU se zaključi.
+
+**Scenarij B – samodejni vnos (sproži ga sistem na dan zapadlosti, brez sodelovanja uporabnika):**
+1. Sistem enkrat na dan poišče vse aktivne ponavljajoče se stroške, ki zapadejo na ta dan.
+2. Sistem za vsakega preveri, ali je strošek za tekoči mesec že ustvarjen.
+3. Sistem ustvari nov strošek z datumom zapadlosti in oznako *samodejno vnesen*.
+4. Sistem za nov strošek izvede PU6 *Preverjanje budgeta*.
+
+**Alternativni tokovi scenarija B:**
+- **1a.** Dan v mesecu je 29, 30 ali 31, mesec pa je krajši – sistem strošek obravnava, kot da zapade zadnji dan meseca; nadaljuje se pri koraku 2.
+- **1b.** Strežnik na dan zapadlosti ni tekel – ob naslednjem zagonu sistem poišče tudi vse zamujene stroške in jih vnese z izvirnim datumom zapadlosti; nadaljuje se pri koraku 2.
+- **2a.** Strošek za tekoči mesec že obstaja – sistem ga ne ustvari ponovno (preprečevanje podvajanja) in nadaljuje z naslednjim ponavljajočim se stroškom.
 
 **Izjeme:**
-- Strežnik ali baza nista dosegljiva ob shranjevanju – sistem izpiše *»Sprememb ni bilo mogoče shraniti.«*; podatki ostanejo v obrazcu.
-- Napaka pri samodejnem vnosu – sistem napako zabeleži, nadaljuje z naslednjim stroškom in neuspešen vnos poskusi znova ob naslednji izvedbi.
+- Strežnik ali baza nista dosegljiva ob shranjevanju (scenarij A) – sistem izpiše *»Sprememb ni bilo mogoče shraniti.«*; podatki ostanejo v obrazcu.
+- Napaka pri samodejnem vnosu (scenarij B) – sistem napako zabeleži, nadaljuje z naslednjim stroškom in neuspešen vnos poskusi znova ob naslednji izvedbi.
 
 ---
 
@@ -314,7 +318,7 @@ Registriran uporabnik
 **Stanje sistema po PU:**
 Stanje se spremeni – varčevalni cilj je ustvarjen, posodobljen, dopolnjen z vplačilom ali izbrisan.
 
-**Scenarij:**
+**Scenarij A – nov varčevalni cilj:**
 1. Uporabnik odpre stran *Varčevalni cilji*.
 2. Sistem prikaže uporabnikove cilje z napredkom (privarčevano / ciljni znesek, odstotek, rok).
 3. Uporabnik izbere *Nov cilj*.
@@ -323,13 +327,24 @@ Stanje se spremeni – varčevalni cilj je ustvarjen, posodobljen, dopolnjen z v
 6. Sistem preveri podatke, shrani cilj in izračuna, koliko bi moral uporabnik privarčevati na mesec, da cilj doseže do roka.
 7. Sistem prikaže nov cilj na seznamu.
 
-**Alternativni tokovi:**
-- **3a.** Uporabnik pri obstoječem cilju izbere *Dodaj vplačilo* – vnese znesek, sistem ga prišteje k privarčevanemu in posodobi napredek.
-- **3b.** Na koncu meseca ima uporabnik pozitiven preostanek – sistem predlaga, da del preostanka nameni izbranemu cilju; uporabnik predlog sprejme ali zavrne.
-- **3c.** Uporabnik izbere *Uredi* ali *Izbriši* – sistem prikaže obrazec oz. zahteva potrditev brisanja.
-- **5a.** Uporabnik prekliče – nič se ne shrani.
+**Alternativni tokovi scenarija A:**
+- **3a.** Uporabnik pri obstoječem cilju izbere *Dodaj vplačilo* in vnese znesek – sistem znesek prišteje k privarčevanemu in posodobi napredek; PU se zaključi.
+  - **3a.1.** Znesek ni večji od 0 – sistem izpiše napako in zahteva popravek.
+  - **3a.2.** Privarčevani znesek s tem vplačilom doseže ali preseže ciljnega – sistem cilj označi kot *dosežen* in uporabniku čestita; PU se zaključi.
+- **3b.** Uporabnik izbere *Uredi* – sistem prikaže izpolnjen obrazec; nadaljuje se pri koraku 5.
+- **3c.** Uporabnik izbere *Izbriši* – sistem zahteva potrditev; ob potrditvi cilj izbriše, ob preklicu se nič ne spremeni. PU se zaključi.
+- **5a.** Uporabnik prekliče – nič se ne shrani; PU se zaključi.
 - **6a.** Ciljni znesek ni večji od 0 ali je rok v preteklosti – sistem izpiše napako; nadaljuje se pri koraku 5.
-- **6b.** Privarčevani znesek doseže ciljnega – sistem cilj označi kot *dosežen* in uporabniku čestita.
+
+**Scenarij B – predlog vplačila na koncu meseca (sproži ga sistem):**
+1. Zadnji dan meseca sistem izračuna uporabnikov preostanek.
+2. Preostanek je pozitiven in uporabnik ima vsaj en aktiven cilj – sistem ob naslednjem odprtju aplikacije predlaga, da del preostanka nameni izbranemu cilju.
+3. Uporabnik predlog sprejme in po želji popravi znesek.
+4. Sistem izvede vplačilo kot v toku 3a scenarija A.
+
+**Alternativni tokovi scenarija B:**
+- **2a.** Preostanek ni pozitiven ali uporabnik nima aktivnega cilja – sistem predloga ne prikaže; PU se zaključi.
+- **3a.** Uporabnik predlog zavrne – nič se ne spremeni; PU se zaključi.
 
 **Izjeme:**
 - Strežnik ali baza nista dosegljiva – sistem izpiše *»Cilja ni bilo mogoče shraniti.«*; podatki ostanejo v obrazcu.
@@ -363,12 +378,12 @@ Stanje se spremeni, če administrator račun blokira, odblokira ali izbriše. Pr
 7. Sistem račun označi kot blokiran in ga odjavi iz vseh aktivnih sej; podatki uporabnika ostanejo shranjeni.
 
 **Alternativni tokovi:**
-- **3a.** Iskanje ne vrne nobenega rezultata – sistem izpiše *»Ni najdenih uporabnikov.«*.
-- **4a.** Administrator izbere *Odblokiraj* pri blokiranem računu – sistem račun ponovno aktivira; nadaljuje se pri koraku 5.
-- **4b.** Administrator izbere *Izbriši* – sistem opozori, da bodo trajno izbrisani tudi vsi podatki uporabnika (stroški, prihodki, kategorije, cilji); po potrditvi račun in podatke izbriše.
-- **4c.** Administrator poskuša blokirati ali izbrisati svoj račun – sistem dejanje zavrne z obvestilom *»Svojega računa ne morete blokirati ali izbrisati.«*.
-- **6a.** Administrator prekliče – nič se ne spremeni.
+- **3a.** Iskanje ne vrne nobenega rezultata – sistem izpiše *»Ni najdenih uporabnikov.«*; nadaljuje se pri koraku 3.
+- **4a.** Administrator izbere *Odblokiraj* pri blokiranem računu – nadaljuje se pri koraku 5; v koraku 7 sistem račun ponovno aktivira.
+- **4b.** Administrator izbere *Izbriši* – sistem opozori, da bodo trajno izbrisani tudi vsi podatki uporabnika (stroški, prihodki, kategorije, cilji); po potrditvi račun in podatke izbriše. PU se zaključi.
+- **4c.** Administrator poskuša blokirati ali izbrisati svoj račun – sistem dejanje zavrne z obvestilom *»Svojega računa ne morete blokirati ali izbrisati.«*; PU se zaključi.
+- **6a.** Administrator prekliče – nič se ne spremeni; PU se zaključi.
 
 **Izjeme:**
 - Strežnik ali baza nista dosegljiva – sistem izpiše *»Dejanja ni bilo mogoče izvesti. Poskusite znova.«*; stanje računa ostane nespremenjeno.
-- Uporabnik brez vloge administratorja poskuša odpreti stran *Uporabniki* – sistem dostop zavrne (*403 – Dostop zavrnjen*) in ga preusmeri na pregled porabe.
+- Uporabnik brez vloge administratorja poskuša odpreti stran *Uporabniki* – sistem izpiše *»Do te strani nimate dostopa.«* in ga preusmeri na pregled porabe.

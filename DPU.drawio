@@ -86,8 +86,13 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="JF_jvAnjAipGXPTElo0j-54" edge="1" parent="1" source="JF_jvAnjAipGXPTElo0j-40" style="endArrow=block;endFill=0;html=1;endSize=12;" target="JF_jvAnjAipGXPTElo0j-39">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="JF_jvAnjAipGXPTElo0j-54" edge="1" parent="1" source="JF_jvAnjAipGXPTElo0j-40" style="endArrow=block;endFill=0;html=1;endSize=14;edgeStyle=orthogonalEdgeStyle;rounded=0;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="JF_jvAnjAipGXPTElo0j-39">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="40" y="595" />
+              <mxPoint x="40" y="310" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

@@ -6,13 +6,19 @@ import org.springframework.data.repository.query.Param;
 import si.um.feri.backend.vao.Strosek;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StrosekRepository extends CrudRepository<Strosek, Integer> {
 
     List<Strosek> findByKategorijaId(int kategorijaId);
 
+    List<Strosek> findByUporabnikId(int uporabnikId);
+
+    Optional<Strosek> findByIdAndUporabnikId(int id, int uporabnikId);
+
     @Query("SELECT s FROM Strosek s LEFT JOIN s.kategorija k " +
-           "WHERE LOWER(s.opis) LIKE LOWER(CONCAT('%', :q, '%')) " +
-           "OR LOWER(k.naziv) LIKE LOWER(CONCAT('%', :q, '%'))")
-    List<Strosek> isci(@Param("q") String q);
+           "WHERE s.uporabnik.id = :uid AND (" +
+           "LOWER(s.opis) LIKE LOWER(CONCAT('%', :q, '%')) " +
+           "OR LOWER(k.naziv) LIKE LOWER(CONCAT('%', :q, '%')))")
+    List<Strosek> isci(@Param("uid") int uporabnikId, @Param("q") String q);
 }

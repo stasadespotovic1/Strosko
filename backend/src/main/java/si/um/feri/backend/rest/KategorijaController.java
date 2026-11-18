@@ -1,36 +1,40 @@
 package si.um.feri.backend.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import si.um.feri.backend.dao.KategorijaRepository;
 import si.um.feri.backend.dao.StrosekRepository;
 import si.um.feri.backend.vao.Kategorija;
+import si.um.feri.backend.vao.Uporabnik;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/kategorije")
 public class KategorijaController {
 
     private static final Logger log = Logger.getLogger(KategorijaController.class.toString());
 
-    @Autowired
-    KategorijaRepository dao;
+    private final KategorijaRepository dao;
+    private final StrosekRepository strosekDao;
 
-    @Autowired
-    StrosekRepository strosekDao;
+    public KategorijaController(KategorijaRepository dao, StrosekRepository strosekDao) {
+        this.dao = dao;
+        this.strosekDao = strosekDao;
+    }
 
     @GetMapping
-    public Iterable<Kategorija> getVse() {
-        return dao.findAll();
+    public Iterable<Kategorija> getVse(@RequestAttribute(AuthInterceptor.ATRIBUT_UPORABNIK) Uporabnik u) {
+        return dao.findByUporabnikId(u.getId());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Kategorija> getKategorija(@PathVariable int id) {
-        return dao.findById(id)
+    public ResponseEntity<Kategorija> getKategorija(@RequestAttribute(AuthInterceptor.ATRIBUT_UPORABNIK) Uporabnik u,
+                                                    @PathVariable int id) {
+        return dao.findByIdAndUporabnikId(id, u.getId())
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -40,17 +44,20 @@ public class KategorijaController {
     }
 
     @PostMapping
-    public ResponseEntity<Kategorija> postKategorija(@RequestBody Kategorija k) {
+    public ResponseEntity<Kategorija> postKategorija(@RequestAttribute(AuthInterceptor.ATRIBUT_UPORABNIK) Uporabnik u,
+                                                     @RequestBody Kategorija k) {
         log.info("Dodajanje kategorije " + k.getNaziv());
         if (!veljavenBudzet(k)) return ResponseEntity.badRequest().build();
-        k.setId(0); 
-        return ResponseEntity.ok(dao.save(k));
+        k.setId(0);
+        k.setUporabnik(u);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dao.save(k));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Kategorija> putKategorija(@PathVariable int id, @RequestBody Kategorija nova) {
+    public ResponseEntity<Kategorija> putKategorija(@RequestAttribute(AuthInterceptor.ATRIBUT_UPORABNIK) Uporabnik u,
+                                                    @PathVariable int id, @RequestBody Kategorija nova) {
         if (!veljavenBudzet(nova)) return ResponseEntity.badRequest().build();
-        return dao.findById(id).map(k -> {
+        return dao.findByIdAndUporabnikId(id, u.getId()).map(k -> {
             k.setNaziv(nova.getNaziv());
             k.setBudzet(nova.getBudzet());
             return ResponseEntity.ok(dao.save(k));
@@ -59,10 +66,12 @@ public class KategorijaController {
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteKategorija(@PathVariable int id) {
-        if (!dao.existsById(id)) return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteKategorija(@RequestAttribute(AuthInterceptor.ATRIBUT_UPORABNIK) Uporabnik u,
+                                                 @PathVariable int id) {
+        Optional<Kategorija> k = dao.findByIdAndUporabnikId(id, u.getId());
+        if (k.isEmpty()) return ResponseEntity.notFound().build();
         strosekDao.findByKategorijaId(id).forEach(s -> s.setKategorija(null));
-        dao.deleteById(id);
+        dao.delete(k.get());
         return ResponseEntity.noContent().build();
     }
 }

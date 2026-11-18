@@ -298,6 +298,43 @@ section {
   color: inherit;
 }
 
+.header--user {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.header__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+}
+
+.auth {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 360px;
+  margin-top: 24px;
+}
+
+.auth .alert {
+  margin-top: 0;
+}
+
+.auth__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.auth__switch {
+  margin: 0;
+  color: var(--muted);
+}
+
 ::selection {
   background: #f3d3dc;
 }

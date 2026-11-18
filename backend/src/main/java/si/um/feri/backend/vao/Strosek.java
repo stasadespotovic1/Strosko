@@ -3,6 +3,11 @@ package si.um.feri.backend.vao;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Strosek {
 
@@ -17,6 +22,12 @@ public class Strosek {
     @JoinColumn(name = "kategorija_id")
     private Kategorija kategorija;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "uporabnik_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Uporabnik uporabnik;
+
     public Strosek() {}
 
     public int getId() { return id; }
@@ -29,4 +40,6 @@ public class Strosek {
     public void setDatum(LocalDate datum) { this.datum = datum; }
     public Kategorija getKategorija() { return kategorija; }
     public void setKategorija(Kategorija kategorija) { this.kategorija = kategorija; }
+    public Uporabnik getUporabnik() { return uporabnik; }
+    public void setUporabnik(Uporabnik uporabnik) { this.uporabnik = uporabnik; }
 }

@@ -50,7 +50,7 @@ export const StrosekForm = ({ kategorije, urejan, onSave, onCancel }: StrosekFor
       </div>
       <div className="form__field">
         <label className="form__label" htmlFor="znesek">Znesek (€)</label>
-        <input id="znesek" className="input input--znesek" type="number" step="0.01" min="0" value={znesek} onChange={(e) => setZnesek(e.target.value)} required />
+        <input id="znesek" className="input input--znesek" type="number" step="0.01" min="0.01" value={znesek} onChange={(e) => setZnesek(e.target.value)} required />
       </div>
       <button className="btn" type="submit">{urejan ? "Shrani" : "Dodaj"}</button>
       {urejan && <button className="btn btn--secondary" type="button" onClick={onCancel}>Prekliči</button>}

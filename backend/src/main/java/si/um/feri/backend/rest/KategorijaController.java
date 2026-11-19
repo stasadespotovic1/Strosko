@@ -6,9 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import si.um.feri.backend.dao.KategorijaRepository;
 import si.um.feri.backend.dao.StrosekRepository;
+import si.um.feri.backend.service.PreverjanjeBudgetaService;
 import si.um.feri.backend.vao.Kategorija;
 import si.um.feri.backend.vao.Uporabnik;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -20,10 +22,13 @@ public class KategorijaController {
 
     private final KategorijaRepository dao;
     private final StrosekRepository strosekDao;
+    private final PreverjanjeBudgetaService preverjanje;
 
-    public KategorijaController(KategorijaRepository dao, StrosekRepository strosekDao) {
+    public KategorijaController(KategorijaRepository dao, StrosekRepository strosekDao,
+                                PreverjanjeBudgetaService preverjanje) {
         this.dao = dao;
         this.strosekDao = strosekDao;
+        this.preverjanje = preverjanje;
     }
 
     @GetMapping
@@ -50,7 +55,9 @@ public class KategorijaController {
         if (!veljavenBudzet(k)) return ResponseEntity.badRequest().build();
         k.setId(0);
         k.setUporabnik(u);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dao.save(k));
+        Kategorija shranjena = dao.save(k);
+        preverjanje.preveri(u, LocalDate.now());
+        return ResponseEntity.status(HttpStatus.CREATED).body(shranjena);
     }
 
     @PutMapping("/{id}")
@@ -60,7 +67,10 @@ public class KategorijaController {
         return dao.findByIdAndUporabnikId(id, u.getId()).map(k -> {
             k.setNaziv(nova.getNaziv());
             k.setBudzet(nova.getBudzet());
-            return ResponseEntity.ok(dao.save(k));
+            Kategorija shranjena = dao.save(k);
+            // sprememba budgeta: preveri porabo v tekočem mesecu (PU2 include PU6)
+            preverjanje.preveri(u, LocalDate.now());
+            return ResponseEntity.ok(shranjena);
         }).orElse(ResponseEntity.notFound().build());
     }
 

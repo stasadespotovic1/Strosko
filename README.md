@@ -171,6 +171,8 @@ Diagram prikazuje načrtovano različico aplikacije z vsemi ključnimi funkciona
 
 📄 **Podroben opis vseh neimplementiranih primerov uporabe:** [`primeri_uporabe.md`](primeri_uporabe.md)
 
+📖 **Uporabniške zgodbe, sprejemni kriteriji in naloge:** [`docs/user-stories.md`](docs/user-stories.md)
+
 ---
 
 ## 🛠 Uporabljene tehnologije

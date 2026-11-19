@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import si.um.feri.backend.vao.Strosek;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +17,11 @@ public interface StrosekRepository extends CrudRepository<Strosek, Integer> {
 
     Optional<Strosek> findByIdAndUporabnikId(int id, int uporabnikId);
 
+    List<Strosek> findByUporabnikIdAndDatumBetween(int uporabnikId, LocalDate od, LocalDate doDatuma);
+
     @Query("SELECT s FROM Strosek s LEFT JOIN s.kategorija k " +
-           "WHERE s.uporabnik.id = :uid AND (" +
-           "LOWER(s.opis) LIKE LOWER(CONCAT('%', :q, '%')) " +
-           "OR LOWER(k.naziv) LIKE LOWER(CONCAT('%', :q, '%')))")
+            "WHERE s.uporabnik.id = :uid AND (" +
+            "LOWER(s.opis) LIKE LOWER(CONCAT('%', :q, '%')) " +
+            "OR LOWER(k.naziv) LIKE LOWER(CONCAT('%', :q, '%')))")
     List<Strosek> isci(@Param("uid") int uporabnikId, @Param("q") String q);
 }

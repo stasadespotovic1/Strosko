@@ -147,4 +147,3 @@ export const getMesecniBudzet = (): Promise<MesecniBudzet> =>
 
 export const setMesecniBudzet = (budzet: number | null): Promise<MesecniBudzet> =>
   request("/mesecni-budzet", "Napaka pri shranjevanju mesečnega budgeta", json("PUT", { budzet }));
-main

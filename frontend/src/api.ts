@@ -5,6 +5,7 @@ import type {
   Opozorilo,
   PrijavaInput,
   PrijavaResponse,
+  PregledPorabeOdgovor,
   RegistracijaInput,
   Strosek,
   StrosekInput,
@@ -127,6 +128,9 @@ export const updateKategorija = (id: number, k: KategorijaInput): Promise<Katego
 export const deleteKategorija = (id: number): Promise<void> =>
   request(`/kategorije/${id}`, "Napaka pri brisanju kategorije", { method: "DELETE" });
 
+export const getPregledPorabe = (mesec: string): Promise<PregledPorabeOdgovor> =>
+  request(`/pregled?mesec=${encodeURIComponent(mesec)}`, "Napaka pri branju pregleda porabe");
+
 export const getOpozorila = (): Promise<Opozorilo[]> => request("/opozorila", "Opozoril ni mogoče naložiti");
 
 export const preveriOpozorila = (): Promise<void> =>
@@ -143,3 +147,4 @@ export const getMesecniBudzet = (): Promise<MesecniBudzet> =>
 
 export const setMesecniBudzet = (budzet: number | null): Promise<MesecniBudzet> =>
   request("/mesecni-budzet", "Napaka pri shranjevanju mesečnega budgeta", json("PUT", { budzet }));
+main

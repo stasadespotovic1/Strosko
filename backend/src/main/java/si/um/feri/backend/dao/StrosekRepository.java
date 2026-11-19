@@ -17,10 +17,12 @@ public interface StrosekRepository extends CrudRepository<Strosek, Integer> {
 
     Optional<Strosek> findByIdAndUporabnikId(int id, int uporabnikId);
 
+    List<Strosek> findByUporabnikIdAndDatumBetween(int uporabnikId, LocalDate od, LocalDate doDatuma);
+
     @Query("SELECT s FROM Strosek s LEFT JOIN s.kategorija k " +
-           "WHERE s.uporabnik.id = :uid AND (" +
-           "LOWER(s.opis) LIKE LOWER(CONCAT('%', :q, '%')) " +
-           "OR LOWER(k.naziv) LIKE LOWER(CONCAT('%', :q, '%')))")
+            "WHERE s.uporabnik.id = :uid AND (" +
+            "LOWER(s.opis) LIKE LOWER(CONCAT('%', :q, '%')) " +
+            "OR LOWER(k.naziv) LIKE LOWER(CONCAT('%', :q, '%')))")
     List<Strosek> isci(@Param("uid") int uporabnikId, @Param("q") String q);
 
     // vrstica: [kategorijaId, vsota zneskov]; stroški brez kategorije se ne štejejo

@@ -26,6 +26,7 @@ import { KategorijaForm } from "./KategorijaForm";
 import { MesecniBudzetForm } from "./MesecniBudzetForm";
 import { OpozorilaBanner } from "./OpozorilaBanner";
 import { formatZnesek } from "../format";
+import { PregledPorabe } from "./PregledPorabe.tsx"
 
 type PregledProps = {
   uporabnik: Uporabnik;
@@ -258,6 +259,8 @@ export const Pregled = ({ uporabnik, onOdjava }: PregledProps) => {
           onDelete={handleDelete}
         />
       </section>
+
+      <PregledPorabe stroski={stroski} />
 
       <section>
         <h2>Mesečni budget</h2>

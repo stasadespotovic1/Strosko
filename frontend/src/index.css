@@ -339,6 +339,11 @@ section {
   background: #f3d3dc;
 }
 
+.over {
+  color: var(--danger);
+  font-weight: 600;
+}
+
 .alert--warning {
   border-color: #e3d08a;
   background: #fbf6e0;

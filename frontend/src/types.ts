@@ -36,3 +36,24 @@ export type PrijavaResponse = {
   token: string;
   uporabnik: Uporabnik;
 };
+
+export type StopnjaOpozorila = "PRIBLIZEVANJE" | "PRESEGANJE";
+
+export type Opozorilo = {
+  id: number;
+  // null pri opozorilu za mesečni budget
+  kategorijaId: number | null;
+  naziv: string;
+  stopnja: StopnjaOpozorila;
+  poraba: number;
+  budzet: number;
+  delez: number;
+  leto: number;
+  mesec: number;
+  prebrano: boolean;
+  ustvarjeno: string;
+};
+
+export type MesecniBudzet = {
+  budzet: number | null;
+};

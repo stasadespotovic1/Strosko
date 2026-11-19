@@ -169,6 +169,8 @@ Diagram prikazuje načrtovano različico aplikacije z vsemi ključnimi funkciona
 
 📋 Uporabniške zgodbe s sprejemnimi kriteriji, podrobnostmi implementacije in odgovornimi člani: [`docs/user-stories.md`](docs/user-stories.md)
 
+📖 **Uporabniške zgodbe, sprejemni kriteriji in naloge:** [`docs/user-stories.md`](docs/user-stories.md)
+
 ---
 
 ## 🛠 Uporabljene tehnologije

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Kategorija, KategorijaInput, Strosek, StrosekInput, Uporabnik } from "../types";
+import type { Kategorija, KategorijaInput, Opozorilo, Strosek, StrosekInput, Uporabnik } from "../types";
 import {
   createKategorija,
   createStrosek,
@@ -7,9 +7,15 @@ import {
   deleteStrosek,
   getKategorija,
   getKategorije,
+  getMesecniBudzet,
+  getOpozorila,
   getStrosek,
   getStroski,
   isciStroske,
+  oznaciPrebrano,
+  oznaciVsePrebrano,
+  preveriOpozorila,
+  setMesecniBudzet as shraniMesecniBudzet,
   updateKategorija,
   updateStrosek,
 } from "../api";
@@ -17,6 +23,8 @@ import { StrosekList } from "./StrosekList";
 import { StrosekForm } from "./StrosekForm";
 import { KategorijaList } from "./KategorijaList";
 import { KategorijaForm } from "./KategorijaForm";
+import { MesecniBudzetForm } from "./MesecniBudzetForm";
+import { OpozorilaBanner } from "./OpozorilaBanner";
 import { formatZnesek } from "../format";
 
 type PregledProps = {
@@ -32,6 +40,13 @@ export const Pregled = ({ uporabnik, onOdjava }: PregledProps) => {
   const [napaka, setNapaka] = useState<string | null>(null);
   const [iskanje, setIskanje] = useState("");
   const [zadetki, setZadetki] = useState<Strosek[] | null>(null);
+  const [opozorila, setOpozorila] = useState<Opozorilo[]>([]);
+  const [mesecniBudzet, setMesecniBudzet] = useState<number | null>(null);
+  // začetek datumov v tekočem mesecu (YYYY-MM), za prikaz porabe v mesecu
+  const [tekociMesec] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  });
 
   const naloziStroske = async () => {
     try {
@@ -49,7 +64,23 @@ export const Pregled = ({ uporabnik, onOdjava }: PregledProps) => {
     }
   };
 
+  // opozorila so dodatek; strošek ali budget ostane shranjen tudi, če jih ni mogoče naložiti
+  const naloziOpozorila = async () => {
+    try {
+      setOpozorila(await getOpozorila());
+    } catch {
+      setOpozorila([]);
+    }
+  };
+
   useEffect(() => {
+    // ob odprtju se poraba ponovno preveri (PU6), nato se naložijo neprebrana opozorila
+    preveriOpozorila()
+      .catch(() => undefined)
+      .then(() => getOpozorila())
+      .then(setOpozorila)
+      .catch(() => setOpozorila([]));
+    getMesecniBudzet().then((r) => setMesecniBudzet(r.budzet)).catch((e) => setNapaka(e.message));
     getStroski().then(setStroski).catch((e) => setNapaka(e.message));
     getKategorije().then(setKategorije).catch((e) => setNapaka(e.message));
   }, []);
@@ -77,6 +108,7 @@ export const Pregled = ({ uporabnik, onOdjava }: PregledProps) => {
       setUrejan(null);
       setNapaka(null);
       await naloziStroske();
+      await naloziOpozorila();
     } catch (e) {
       setNapaka((e as Error).message);
     }
@@ -95,6 +127,7 @@ export const Pregled = ({ uporabnik, onOdjava }: PregledProps) => {
     try {
       await deleteStrosek(id);
       await naloziStroske();
+      await naloziOpozorila();
     } catch (e) {
       setNapaka((e as Error).message);
     }
@@ -108,6 +141,7 @@ export const Pregled = ({ uporabnik, onOdjava }: PregledProps) => {
       setNapaka(null);
       await naloziKategorije();
       await naloziStroske();
+      await naloziOpozorila();
     } catch (e) {
       setNapaka((e as Error).message);
     }
@@ -127,12 +161,46 @@ export const Pregled = ({ uporabnik, onOdjava }: PregledProps) => {
       await deleteKategorija(id);
       await naloziKategorije();
       await naloziStroske();
+      await naloziOpozorila();
+    } catch (e) {
+      setNapaka((e as Error).message);
+    }
+  };
+
+  const handleSaveMesecniBudzet = async (budzet: number | null) => {
+    try {
+      const r = await shraniMesecniBudzet(budzet);
+      setMesecniBudzet(r.budzet);
+      setNapaka(null);
+      await naloziOpozorila();
+    } catch (e) {
+      setNapaka((e as Error).message);
+    }
+  };
+
+  const handleZapriOpozorilo = async (id: number) => {
+    try {
+      await oznaciPrebrano(id);
+      setOpozorila((trenutna) => trenutna.filter((o) => o.id !== id));
+    } catch (e) {
+      setNapaka((e as Error).message);
+    }
+  };
+
+  const handleZapriVsa = async () => {
+    try {
+      await oznaciVsePrebrano();
+      setOpozorila([]);
     } catch (e) {
       setNapaka((e as Error).message);
     }
   };
 
   const skupaj = stroski.reduce((sum, s) => sum + s.znesek, 0);
+
+  const porabaMesec = stroski
+    .filter((s) => s.datum.startsWith(tekociMesec))
+    .reduce((sum, s) => sum + s.znesek, 0);
 
   const filtrirani = q ? zadetki ?? [] : stroski;
 
@@ -158,6 +226,13 @@ export const Pregled = ({ uporabnik, onOdjava }: PregledProps) => {
         </div>
       )}
 
+      <OpozorilaBanner
+        opozorila={opozorila}
+        onZapri={handleZapriOpozorilo}
+        onZapriVse={handleZapriVsa}
+        onPrikazi={setIskanje}
+      />
+
       <section>
         <h2>{urejan ? "Urejanje stroška" : "Nov strošek"}</h2>
         <StrosekForm
@@ -181,6 +256,16 @@ export const Pregled = ({ uporabnik, onOdjava }: PregledProps) => {
           praznoSporocilo={q ? "Ni zadetkov za iskanje." : undefined}
           onEdit={handleEdit}
           onDelete={handleDelete}
+        />
+      </section>
+
+      <section>
+        <h2>Mesečni budget</h2>
+        <MesecniBudzetForm
+          key={mesecniBudzet ?? "brez"}
+          budzet={mesecniBudzet}
+          poraba={porabaMesec}
+          onSave={handleSaveMesecniBudzet}
         />
       </section>
 

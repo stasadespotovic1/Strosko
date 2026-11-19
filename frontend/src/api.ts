@@ -1,6 +1,8 @@
 import type {
   Kategorija,
   KategorijaInput,
+  MesecniBudzet,
+  Opozorilo,
   PrijavaInput,
   PrijavaResponse,
   PregledPorabeOdgovor,
@@ -127,4 +129,22 @@ export const deleteKategorija = (id: number): Promise<void> =>
   request(`/kategorije/${id}`, "Napaka pri brisanju kategorije", { method: "DELETE" });
 
 export const getPregledPorabe = (mesec: string): Promise<PregledPorabeOdgovor> =>
-    request(`/pregled?mesec=${encodeURIComponent(mesec)}`, "Napaka pri branju pregleda porabe");
+  request(`/pregled?mesec=${encodeURIComponent(mesec)}`, "Napaka pri branju pregleda porabe");
+
+export const getOpozorila = (): Promise<Opozorilo[]> => request("/opozorila", "Opozoril ni mogoče naložiti");
+
+export const preveriOpozorila = (): Promise<void> =>
+  request("/opozorila/preveri", "Preverjanje budgeta ni uspelo", { method: "POST" });
+
+export const oznaciPrebrano = (id: number): Promise<void> =>
+  request(`/opozorila/${id}/prebrano`, "Opozorila ni mogoče označiti kot prebranega", { method: "PUT" });
+
+export const oznaciVsePrebrano = (): Promise<void> =>
+  request("/opozorila/prebrano", "Opozoril ni mogoče označiti kot prebranih", { method: "PUT" });
+
+export const getMesecniBudzet = (): Promise<MesecniBudzet> =>
+  request("/mesecni-budzet", "Mesečnega budgeta ni mogoče naložiti");
+
+export const setMesecniBudzet = (budzet: number | null): Promise<MesecniBudzet> =>
+  request("/mesecni-budzet", "Napaka pri shranjevanju mesečnega budgeta", json("PUT", { budzet }));
+main

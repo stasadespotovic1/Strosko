@@ -25,6 +25,8 @@ public class Uporabnik {
     private Vloga vloga = Vloga.UPORABNIK;
 
     private boolean blokiran = false;
+    // splošni mesečni budget (null = ni nastavljen)
+    private Double mesecniBudzet;
 
     public Uporabnik() {}
 
@@ -38,6 +40,8 @@ public class Uporabnik {
     public void setGeslo(String geslo) { this.geslo = geslo; }
     public Vloga getVloga() { return vloga; }
     public void setVloga(Vloga vloga) { this.vloga = vloga; }
+    public Double getMesecniBudzet() { return mesecniBudzet; }
+    public void setMesecniBudzet(Double mesecniBudzet) { this.mesecniBudzet = mesecniBudzet; }
     public boolean isBlokiran() { return blokiran; }
     public void setBlokiran(boolean blokiran) { this.blokiran = blokiran; }
 }

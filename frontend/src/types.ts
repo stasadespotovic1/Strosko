@@ -53,3 +53,24 @@ export type PregledPorabeOdgovor = {
   skupajPrejsnji: number;
   postavke: PostavkaPregleda[];
 };
+
+export type StopnjaOpozorila = "PRIBLIZEVANJE" | "PRESEGANJE";
+
+export type Opozorilo = {
+  id: number;
+  // null pri opozorilu za mesečni budget
+  kategorijaId: number | null;
+  naziv: string;
+  stopnja: StopnjaOpozorila;
+  poraba: number;
+  budzet: number;
+  delez: number;
+  leto: number;
+  mesec: number;
+  prebrano: boolean;
+  ustvarjeno: string;
+};
+
+export type MesecniBudzet = {
+  budzet: number | null;
+};

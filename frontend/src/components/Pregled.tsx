@@ -18,6 +18,7 @@ import { StrosekForm } from "./StrosekForm";
 import { KategorijaList } from "./KategorijaList";
 import { KategorijaForm } from "./KategorijaForm";
 import { formatZnesek } from "../format";
+import { PregledPorabe } from "./PregledPorabe.tsx"
 
 type PregledProps = {
   uporabnik: Uporabnik;
@@ -183,6 +184,8 @@ export const Pregled = ({ uporabnik, onOdjava }: PregledProps) => {
           onDelete={handleDelete}
         />
       </section>
+
+      <PregledPorabe stroski={stroski} />
 
       <section>
         <h2>Kategorije</h2>

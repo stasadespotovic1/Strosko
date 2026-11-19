@@ -338,3 +338,8 @@ section {
 ::selection {
   background: #f3d3dc;
 }
+
+.over {
+  color: var(--danger);
+  font-weight: 600;
+}

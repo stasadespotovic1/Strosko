@@ -3,6 +3,7 @@ import type {
   KategorijaInput,
   PrijavaInput,
   PrijavaResponse,
+  PregledPorabeOdgovor,
   RegistracijaInput,
   Strosek,
   StrosekInput,
@@ -124,3 +125,6 @@ export const updateKategorija = (id: number, k: KategorijaInput): Promise<Katego
 
 export const deleteKategorija = (id: number): Promise<void> =>
   request(`/kategorije/${id}`, "Napaka pri brisanju kategorije", { method: "DELETE" });
+
+export const getPregledPorabe = (mesec: string): Promise<PregledPorabeOdgovor> =>
+    request(`/pregled?mesec=${encodeURIComponent(mesec)}`, "Napaka pri branju pregleda porabe");

@@ -36,3 +36,20 @@ export type PrijavaResponse = {
   token: string;
   uporabnik: Uporabnik;
 };
+
+export type PostavkaPregleda = {
+  kategorijaId: number | null;
+  naziv: string;
+  budzet: number | null;
+  porabljeno: number;
+  porabljenoPrejsnji: number;
+  delez: number;
+  preseceno: boolean;
+};
+
+export type PregledPorabeOdgovor = {
+  mesec: string;
+  skupaj: number;
+  skupajPrejsnji: number;
+  postavke: PostavkaPregleda[];
+};

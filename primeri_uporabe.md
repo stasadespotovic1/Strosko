@@ -5,18 +5,18 @@ Dokument vsebuje podrobne opise primerov uporabe (PU) iz [diagrama primerov upor
 | ID | Primer uporabe | Akter | Status |
 |---|---|---|---|
 | PU1 | [Registracija](#pu1--registracija) | Neregistriran uporabnik | ✅ |
-| PU2 | [Upravljanje kategorij in budgetov](#pu2--upravljanje-kategorij-in-budgetov-mesečni-budget) | Registriran uporabnik | ✅ kategorije · 🚧 mesečni budget* |
+| PU2 | [Upravljanje kategorij in budgetov](#pu2--upravljanje-kategorij-in-budgetov-mesečni-budget) | Registriran uporabnik | ✅* |
 | PU3 | Vnos stroška | Registriran uporabnik | ✅ – ni podrobno opisan** |
 | PU4 | [Vnos prihodka](#pu4--vnos-prihodka) | Registriran uporabnik | 🚧 |
-| PU5 | [Pregled porabe](#pu5--pregled-porabe) | Registriran uporabnik | 🚧 |
-| PU6 | [Preverjanje budgeta](#pu6--preverjanje-budgeta) | – (vključen v PU2 in PU3) | 🚧 |
-| PU7 | [Prikaz opozorila](#pu7--prikaz-opozorila) | – (razširja PU5 in PU6) | 🚧 |
+| PU5 | [Pregled porabe](#pu5--pregled-porabe) | Registriran uporabnik | ✅ poraba po kategorijah · 🚧 prihodki v pregledu |
+| PU6 | [Preverjanje budgeta](#pu6--preverjanje-budgeta) | – (vključen v PU2 in PU3) | ✅ |
+| PU7 | [Prikaz opozorila](#pu7--prikaz-opozorila) | – (razširja PU5 in PU6) | ✅ |
 | PU8 | [Upravljanje ponavljajočih se stroškov](#pu8--upravljanje-ponavljajočih-se-stroškov) | Registriran uporabnik | 📝 |
 | PU9 | [Upravljanje varčevalnih ciljev](#pu9--upravljanje-varčevalnih-ciljev) | Registriran uporabnik | 📝 |
 | PU10 | [Upravljanje uporabnikov](#pu10--upravljanje-uporabnikov) | Administrator | 📝 |
 
-*Upravljanje kategorij in budgetov kategorij je že implementirano, zato je podrobno opisan le še neimplementiran del – nastavitev mesečnega budgeta.<br>
-** Vnos stroška je že implementiran; v načrtovani različici bo dopolnjen z vključenim PU6 *Preverjanje budgeta*, ki je opisan spodaj.
+*Upravljanje kategorij in budgetov kategorij je bilo implementirano že pred nastankom dokumenta, zato je podrobno opisan le del z nastavitvijo mesečnega budgeta (zdaj prav tako implementiran).<br>
+** Vnos stroška je implementiran skupaj z vključenim PU6 *Preverjanje budgeta*, ki je opisan spodaj.
 
 > **Prijava** ni samostojen primer uporabe, temveč predpogoj za vse primere uporabe registriranega uporabnika in administratorja. Ker je administrator specializacija registriranega uporabnika, lahko izvaja tudi vse njegove primere uporabe.
 

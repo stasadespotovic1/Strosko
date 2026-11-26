@@ -21,12 +21,15 @@
 3. [Besednjak](#-besednjak)
 4. [Diagram primerov uporabe](#-diagram-primerov-uporabe)
    - [Uporabniške zgodbe](#uporabniške-zgodbe)
-5. [Uporabljene tehnologije](#-uporabljene-tehnologije)
-6. [Struktura projekta](#-struktura-projekta)
-7. [Navodila za nameščanje in zagon](#-navodila-za-nameščanje-in-zagon)
-8. [REST API](#-rest-api)
-9. [Navodila za razvijalce](#-navodila-za-razvijalce)
-10. [Standardi kodiranja](#-standardi-kodiranja)
+5. [Razredni diagram](#-razredni-diagram)
+   - [Vloga in namen razredov](#vloga-in-namen-razredov)
+   - [Ključne metode](#ključne-metode)
+6. [Uporabljene tehnologije](#-uporabljene-tehnologije)
+7. [Struktura projekta](#-struktura-projekta)
+8. [Navodila za nameščanje in zagon](#-navodila-za-nameščanje-in-zagon)
+9. [REST API](#-rest-api)
+10. [Navodila za razvijalce](#-navodila-za-razvijalce)
+11. [Standardi kodiranja](#-standardi-kodiranja)
 
 ---
 
@@ -64,11 +67,11 @@ Stroške, ki se ponavljajo vsak mesec (najemnina, Netflix, Spotify …), uporabn
 | Prijava in odjava | Prijava z e-pošto in geslom; vsak uporabnik vidi samo svoje podatke | – (predpogoj za PU2–PU10) | ✅ |
 | Kategorije | Ustvarjanje, urejanje in brisanje lastnih kategorij (hrana, prevoz, zabava, naročnine …) | PU2 | ✅ |
 | Budget po kategorijah | Vsaka kategorija ima lahko svoj mesečni budget | PU2 | ✅ |
-| Mesečni budget | Splošen mesečni budget, nastavljen na začetku meseca | PU2 | 🚧 |
+| Mesečni budget | Splošen mesečni budget in prikaz, koliko ga v tekočem mesecu še ostane | PU2 | ✅ |
 | Vnos stroškov | Vsak zapis ima znesek, datum, kratek opis in kategorijo | PU3 | ✅ |
 | Vnos prihodkov | Štipendija, študentsko delo, žepnina … | PU4 | 🚧 |
-| Pregled porabe | Poraba v tekočem mesecu, preostanek in razporeditev po kategorijah | PU5 | 🚧 |
-| Preverjanje budgeta in opozorila | Ob vsakem novem strošku sistem preveri porabo in uporabnika opozori ob približevanju (80 %) ali preseganju budgeta | PU6, PU7 | 🚧 |
+| Pregled porabe | Poraba v izbranem mesecu po kategorijah, delež, presežen budget in primerjava s prejšnjim mesecem | PU5 | ✅ poraba po kategorijah · 🚧 prihodki v pregledu |
+| Preverjanje budgeta in opozorila | Ob vsakem novem strošku ali spremembi budgeta sistem preveri porabo in uporabnika opozori ob približevanju (80 %) ali preseganju budgeta | PU6, PU7 | ✅ |
 | Ponavljajoči se stroški | Najemnina, telefon, Netflix, Spotify … se vnesejo enkrat in se samodejno upoštevajo vsak mesec | PU8 | 📝 |
 | Varčevalni cilji | Npr. *300 € za poletje* – spremljanje napredka in koliko ostane za cilj na koncu meseca | PU9 | 📝 |
 | Upravljanje uporabnikov | Administrator pregleduje, blokira, odblokira in briše uporabniške račune | PU10 | 📝 |
@@ -151,12 +154,12 @@ Diagram prikazuje načrtovano različico aplikacije z vsemi ključnimi funkciona
 | ID | Primer uporabe | Akter | Status |
 |---|---|---|---|
 | PU1 | Registracija | Neregistriran uporabnik | ✅ |
-| PU2 | Upravljanje kategorij in budgetov | Registriran uporabnik | ✅ kategorije in budget kategorije · 🚧 mesečni budget |
+| PU2 | Upravljanje kategorij in budgetov | Registriran uporabnik | ✅ |
 | PU3 | Vnos stroška | Registriran uporabnik | ✅ |
 | PU4 | Vnos prihodka | Registriran uporabnik | 🚧 |
-| PU5 | Pregled porabe | Registriran uporabnik | 🚧 |
-| PU6 | Preverjanje budgeta | – (vključen v PU2 in PU3) | 🚧 |
-| PU7 | Prikaz opozorila | – (razširja PU5 in PU6) | 🚧 |
+| PU5 | Pregled porabe | Registriran uporabnik | ✅ poraba po kategorijah · 🚧 prihodki v pregledu |
+| PU6 | Preverjanje budgeta | – (vključen v PU2 in PU3) | ✅ |
+| PU7 | Prikaz opozorila | – (razširja PU5 in PU6) | ✅ |
 | PU8 | Upravljanje ponavljajočih se stroškov | Registriran uporabnik | 📝 |
 | PU9 | Upravljanje varčevalnih ciljev | Registriran uporabnik | 📝 |
 | PU10 | Upravljanje uporabnikov | Administrator | 📝 |
@@ -168,6 +171,69 @@ Diagram prikazuje načrtovano različico aplikacije z vsemi ključnimi funkciona
 ### Uporabniške zgodbe
 
 📋 Uporabniške zgodbe s sprejemnimi kriteriji, podrobnostmi implementacije in odgovornimi člani: [`docs/user-stories.md`](docs/user-stories.md)
+
+---
+
+## 🧱 Razredni diagram
+
+Razredni diagram prikazuje strukturo celotne načrtovane aplikacije – vse funkcionalnosti iz diagrama primerov uporabe (PU1–PU10), ne le tistih, ki so že implementirane.
+
+![Razredni diagram](razredni-diagram.drawio.png)
+
+<sub>Izvorna datoteka za urejanje v [draw.io](https://app.diagrams.net/): [`razredni-diagram.drawio`](razredni-diagram.drawio)</sub>
+
+Razredi so po vlogi označeni z barvami: **modra** – uporabniki in prijava, **rumena** – domenski razredi (podatki uporabnika), **zelena** – naštevni tipi (`«enumeration»`), **vijolična** – storitve s poslovno logiko (`«service»`), **siva** – rezultat pregleda porabe. Diagram uporablja generalizacijo (`Administrator`, `Strosek`, `Prihodek`), kompozicijo (deli, ki brez uporabnika oz. cilja ne obstajajo), asociacije s kardinalnostmi ter odvisnosti `«use»`, `«instantiate»` in `«call»`, ki prikazujejo, katere razrede storitve uporabljajo in ustvarjajo.
+
+### Vloga in namen razredov
+
+| Razred | Vloga in namen | PU |
+|---|---|---|
+| `Uporabnik` | Registriran uporabnik z imenom, e-pošto in zgoščenim geslom. Je lastnik vseh svojih podatkov (kategorij, transakcij, budgetov, ciljev, opozoril, sej), zato vsak uporabnik vidi samo svoje finance. | PU1–PU9 |
+| `Administrator` | Specializacija uporabnika (dedovanje) s pravicami za upravljanje uporabniških računov; do financ uporabnikov nima dostopa. | PU10 |
+| `Seja` | Prijavna seja z naključnim žetonom in časom poteka; omogoča, da uporabnik ostane prijavljen, in odjavo. | prijava |
+| `AvtentikacijaService` | Registracija, prijava, odjava in preverjanje veljavnosti seje. | PU1, prijava |
+| `Transakcija` *(abstraktni)* | Skupni nadrazred za premike denarja z zneskom, datumom in opisom. | PU3, PU4 |
+| `Strosek` | Izdatek uporabnika; lahko spada v kategorijo in je lahko samodejno vnesen iz ponavljajočega se stroška. | PU3 |
+| `Prihodek` | Prejeti denar z virom (`VirPrihodka`). | PU4 |
+| `VirPrihodka` | Naštevni tip virov prihodka: štipendija, študentsko delo, žepnina, drugo. | PU4 |
+| `Kategorija` | Skupina stroškov (hrana, prevoz …) z neobveznim mesečnim budgetom. | PU2 |
+| `MesecniBudzet` | Splošni budget uporabnika za določen mesec. | PU2 |
+| `PreverjanjeBudgetaService` | Po vsakem novem strošku ali spremembi budgeta primerja porabo z budgeti in ustvari ali uskladi opozorila. | PU6 |
+| `Opozorilo` | Shranjeno opozorilo o porabi budgeta kategorije ali mesečnega budgeta za določen mesec; ostane, dokler ga uporabnik ne prebere. | PU7 |
+| `StopnjaOpozorila` | Naštevni tip stopenj opozorila: približevanje (80 %) in preseganje (100 %). | PU7 |
+| `PregledPorabeService` | Izračuna mesečni pregled porabe za izbranega uporabnika in mesec. | PU5 |
+| `PregledPorabe` | Rezultat pregleda: skupna poraba, primerjava s prejšnjim mesecem, prihodki, preostanek in neprebrana opozorila. | PU5 |
+| `PostavkaPregleda` | Ena vrstica pregleda: poraba kategorije, delež, primerjava s prejšnjim mesecem in ali je budget presežen. | PU5 |
+| `PonavljajociStrosek` | Predloga za strošek, ki se ponovi vsak mesec na isti dan; lahko je aktivna ali ustavljena. | PU8 |
+| `SamodejniVnosService` | Na dan zapadlosti iz ponavljajočih se stroškov samodejno ustvari stroške in zanje sproži preverjanje budgeta. | PU8 |
+| `VarcevalniCilj` | Cilj varčevanja s ciljnim zneskom in rokom ter spremljanjem napredka. | PU9 |
+| `VplaciloVCilj` | Posamezno vplačilo, ki poveča privarčevani znesek cilja. | PU9 |
+
+### Ključne metode
+
+| Funkcionalnost | Metoda | Naloga |
+|---|---|---|
+| Registracija in prijava | `AvtentikacijaService.registriraj(ime, email, geslo): Seja` | Preveri podatke in edinstvenost e-pošte, shrani uporabnika z zgoščenim geslom in ga samodejno prijavi. |
+| | `AvtentikacijaService.prijavi(email, geslo): Seja` | Z `Uporabnik.preveriGeslo(geslo)` preveri geslo in ustvari novo sejo. |
+| | `AvtentikacijaService.preveriSejo(token): Uporabnik` / `Seja.jeVeljavna()` | Pred vsako zahtevo ugotovi, kateri uporabnik je prijavljen in ali seja še velja. |
+| | `AvtentikacijaService.odjavi(token)` | Razveljavi sejo. |
+| Kategorije in budgeti | `Uporabnik.dodajKategorijo(kategorija)`, `Kategorija.posodobi(naziv, budzet)` | Dodajanje in urejanje lastnih kategorij in njihovih budgetov. |
+| | `Uporabnik.nastaviMesecniBudzet(mesec, znesek)` | Nastavi splošni budget za izbrani mesec. |
+| | `Kategorija.porabaVMesecu(mesec): double` | Vrne porabo kategorije v mesecu (osnova za preverjanje in pregled). |
+| Vnos stroškov in prihodkov | `Uporabnik.dodajStrosek(strosek)`, `Uporabnik.dodajPrihodek(prihodek)` | Shrani novo transakcijo uporabnika; po stroških se sproži preverjanje budgeta. |
+| | `Transakcija.getMesec(): YearMonth` | Določi mesec, v katerega transakcija spada. |
+| Preverjanje budgeta in opozorila | `PreverjanjeBudgetaService.preveri(uporabnik, datum)` | Za mesec datuma izračuna porabo po kategorijah in skupno porabo ter ustvari, osveži ali izbriše opozorila. |
+| | `PreverjanjeBudgetaService.dolociStopnjo(poraba, budzet): StopnjaOpozorila` | Glede na pragova 80 % in 100 % določi stopnjo opozorila (ali je ni). |
+| | `Opozorilo.oznaciPrebrano()` | Uporabnik zapre opozorilo. |
+| Pregled porabe | `PregledPorabeService.izracunajPregled(uporabnik, mesec): PregledPorabe` | Iz transakcij izbranega in prejšnjega meseca sestavi pregled s postavkami po kategorijah. |
+| Ponavljajoči se stroški | `PonavljajociStrosek.jeZapadel(datum): boolean` | Ugotovi, ali je strošek na ta dan treba vnesti. |
+| | `PonavljajociStrosek.ustvariStrosek(datum): Strosek` | Iz predloge ustvari nov strošek z oznako *samodejno vnesen*. |
+| | `SamodejniVnosService.izvediSamodejniVnos(datum)` | Za vse zapadle aktivne predloge ustvari stroške in pokliče preverjanje budgeta. |
+| | `PonavljajociStrosek.ustavi()` / `nadaljuj()` | Začasno ustavi ali ponovno vklopi samodejni vnos. |
+| Varčevalni cilji | `VarcevalniCilj.dodajVplacilo(znesek): VplaciloVCilj` | Doda vplačilo in ob dosegu ciljnega zneska cilj označi kot dosežen. |
+| | `VarcevalniCilj.napredek()`, `privarcevano()`, `mesecniZnesekDoRoka()` | Izračunajo odstotek napredka, privarčevani znesek in koliko je treba privarčevati na mesec do roka. |
+| Upravljanje uporabnikov | `Administrator.pregledUporabnikov(iskanje): List<Uporabnik>` | Iskanje in pregled uporabniških računov. |
+| | `Administrator.blokiraj(uporabnik)` / `odblokiraj(uporabnik)` / `izbrisi(uporabnik)` | Onemogoči ali ponovno omogoči prijavo oz. trajno izbriše račun z vsemi podatki. |
 
 ---
 
@@ -223,26 +289,34 @@ Strosko/
 │   │   │   │   │   └── WebConfig.java        # CORS, preverjanje prijave, BCrypt
 │   │   │   │   ├── vao/                      # Entitete (modeli podatkov)
 │   │   │   │   │   ├── Kategorija.java
+│   │   │   │   │   ├── Opozorilo.java
 │   │   │   │   │   ├── Seja.java
+│   │   │   │   │   ├── StopnjaOpozorila.java
 │   │   │   │   │   ├── Strosek.java
 │   │   │   │   │   ├── Uporabnik.java
 │   │   │   │   │   └── Vloga.java
 │   │   │   │   ├── dao/                      # Repozitoriji (dostop do baze)
 │   │   │   │   │   ├── KategorijaRepository.java
+│   │   │   │   │   ├── OpozoriloRepository.java
 │   │   │   │   │   ├── SejaRepository.java
 │   │   │   │   │   ├── StrosekRepository.java
 │   │   │   │   │   └── UporabnikRepository.java
-│   │   │   │   ├── dto/                      # Podatki zahtev/odgovorov (registracija, prijava)
+│   │   │   │   ├── dto/                      # Podatki zahtev/odgovorov (prijava, opozorila, pregled …)
+│   │   │   │   ├── service/
+│   │   │   │   │   └── PreverjanjeBudgetaService.java  # Preverjanje budgeta in usklajevanje opozoril
 │   │   │   │   └── rest/                     # REST kontrolerji (API končne točke)
 │   │   │   │       ├── AuthInterceptor.java  # Preverjanje žetona prijavljenega uporabnika
 │   │   │   │       ├── InfoController.java
 │   │   │   │       ├── KategorijaController.java
+│   │   │   │       ├── MesecniBudzetController.java
 │   │   │   │       ├── NapakaHandler.java    # Enotna oblika sporočil o napakah
+│   │   │   │       ├── OpozorilaController.java
+│   │   │   │       ├── PregledController.java    # Pregled porabe po kategorijah
 │   │   │   │       ├── StrosekController.java
 │   │   │   │       └── UporabnikController.java  # Registracija, prijava, odjava
 │   │   │   └── resources/
 │   │   │       └── application.properties    # Konfiguracija (port, baza, JPA)
-│   │   └── test/                             # Testi
+│   │   └── test/                             # Testi (npr. PreverjanjeBudgetaServiceTest)
 │   ├── .env.example                 # Predloga za lokalne nastavitve (geslo baze)
 │   ├── mvnw / mvnw.cmd              # Skripti za zagon Maven wrapperja
 │   └── pom.xml                      # Maven odvisnosti in nastavitve gradnje
@@ -253,7 +327,10 @@ Strosko/
 │   │   ├── components/              # React komponente
 │   │   │   ├── KategorijaForm.tsx   # Obrazec za dodajanje/urejanje kategorije
 │   │   │   ├── KategorijaList.tsx   # Seznam kategorij
+│   │   │   ├── MesecniBudzetForm.tsx # Nastavitev mesečnega budgeta
+│   │   │   ├── OpozorilaBanner.tsx  # Prikaz opozoril o budgetu
 │   │   │   ├── Pregled.tsx          # Glavni zaslon prijavljenega uporabnika
+│   │   │   ├── PregledPorabe.tsx    # Pregled porabe po kategorijah za izbrani mesec
 │   │   │   ├── PrijavaForm.tsx      # Obrazec za prijavo
 │   │   │   ├── RegistracijaForm.tsx # Obrazec za registracijo
 │   │   │   ├── StrosekForm.tsx      # Obrazec za dodajanje/urejanje stroška
@@ -276,6 +353,8 @@ Strosko/
 │
 ├── DPU.drawio                       # Diagram primerov uporabe (izvor za draw.io)
 ├── DPU_canvas.drawio.png            # Diagram primerov uporabe (slika)
+├── razredni-diagram.drawio          # Razredni diagram (izvor za draw.io)
+├── razredni-diagram.drawio.png      # Razredni diagram (slika)
 ├── primeri_uporabe.md               # Podroben opis primerov uporabe
 └── README.md
 ```
@@ -286,9 +365,10 @@ Strosko/
 
 | Mapa | Vloga |
 |---|---|
-| `vao/` | *Value Access Objects* – JPA entitete, ki predstavljajo tabele v bazi (`Uporabnik`, `Seja`, `Kategorija`, `Strosek`). |
+| `vao/` | *Value Access Objects* – JPA entitete, ki predstavljajo tabele v bazi (`Uporabnik`, `Seja`, `Kategorija`, `Strosek`, `Opozorilo`). |
 | `dao/` | *Data Access Objects* – Spring Data JPA repozitoriji za CRUD operacije nad entitetami. |
 | `dto/` | Podatki, ki jih REST API sprejme ali vrne, kadar se razlikujejo od entitet (npr. uporabnik brez gesla). |
+| `service/` | Poslovna logika, ki jo uporablja več kontrolerjev (preverjanje budgeta in opozorila). |
 | `rest/` | REST kontrolerji, ki sprejemajo HTTP zahteve, validirajo podatke in kličejo repozitorije. |
 | `config/` | Spletna konfiguracija: CORS, preverjanje prijave in zgoščevanje gesel. |
 | `resources/` | Konfiguracijske datoteke aplikacije. |
@@ -439,6 +519,13 @@ Vse končne točke razen `/info`, `/auth/registracija` in `/auth/prijava` zahtev
 | `POST` | `/stroski` | Nov strošek |
 | `PUT` | `/stroski/{id}` | Posodobitev stroška |
 | `DELETE` | `/stroski/{id}` | Brisanje stroška |
+| `GET` | `/mesecni-budzet` | Trenutni mesečni budget |
+| `PUT` | `/mesecni-budzet` | Nastavitev ali odstranitev mesečnega budgeta |
+| `GET` | `/opozorila` | Neprebrana opozorila (`?vsa=true` tudi prebrana) |
+| `POST` | `/opozorila/preveri` | Ponovno preverjanje porabe v tekočem mesecu |
+| `PUT` | `/opozorila/{id}/prebrano` | Označi opozorilo kot prebrano |
+| `PUT` | `/opozorila/prebrano` | Označi vsa opozorila kot prebrana |
+| `GET` | `/pregled?mesec=LLLL-MM` | Pregled porabe po kategorijah za izbrani mesec |
 
 <details>
 <summary>Primer zahteve – registracija</summary>
